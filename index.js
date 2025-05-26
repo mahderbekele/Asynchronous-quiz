@@ -180,3 +180,46 @@ candidate.sendConfirmation();
 // student’s progress. Create an async method generateCertificate(studentName) that returns a Promise
 //  resolving only if the progress is 100, otherwise reject with "Incomplete progress".
 
+class Course {
+    constructor(title, instructor, students){
+        this.title = title;
+        this.instructor= instructor;
+        this.students= students;
+    }
+updateProgress(studentName, value){
+    const student = this.students.find(s=>s.name === studentName);
+    if (student){
+        student.progress = value;
+        }else{
+            throw new Error (`Student ${studentName} not found`);
+        }
+    }
+async generateCertificate(studentName){
+    const student= this.students.find(s => s.name ===studentName);
+    if (student){
+        student.progress = value;
+    } else {
+        throw new Error(`Student ${studentName} not found`);
+    }
+    }
+async generateCertificate(studentName) {
+    const student = this.students.find(s => s.name === studentName);
+    return new Promise((resolve, reject) => {
+      if (!student) {
+        reject(`Student ${studentName} not found`);
+      } else if (student.progress === 100) {
+        resolve(`Certificate for ${student.name} in course "${this.title}"`);
+      } else {
+        reject("Incomplete progress");
+      }
+    });
+  }
+}
+const course = new Course("Anatomy", "Dr. Raja", [
+  { name: "Mahder", progress: 90 },
+  { name: "Nahela", progress: 79 }
+]);
+course.updateProgress("Mahder", 100);
+course.generateCertificate("Mahder")
+  .then(certificate => console.log(certificate))
+  .catch(error => console.error(error));
