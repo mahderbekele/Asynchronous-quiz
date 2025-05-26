@@ -66,43 +66,46 @@ order.processPayment();
 // "All tasks completed!" or rejecting with "Pending tasks remaining" based on the state of the tasks array.
 
 //pseudo code
+//1.create a TeamMember class with properties of name, role, and an array of tasks 
+//2.create a function completeTask which takes in parameter of taskTitle.
+// for task in tasks
+//if task.completed==true
+//return completed
+//3. create a function checkProgress if all task.completed==true
+//return a promise "All tasks completed!" 
+//else "Pending tasks remaining" 
 
 
 
 
 
-
-
-
-
-class TeamMember{
-  constructor(name,role,tasks){
-    this.name=name;
-    this.role=role;
-    this.tasks=tasks
+class TeamMember {
+  constructor(name, role, tasks) {
+    this.name = name;
+    this.role = role;
+    this.tasks = tasks;
   }
-   completeTask(taskTitle) {
-    for (let task of this.tasks) {
-      if (task.title === taskTitle) {
-        task.completed = true;
+}
+TeamMember.prototype.completeTask = function (taskTitle) {
+  for (let i = 0; i < this.tasks.length; i++) {
+    if (this.tasks[i].title === taskTitle) {
+      this.tasks[i].completed = true;
+      break;
+    }
+  }
+};
+TeamMember.prototype.checkProgress = function () {
+  return new Promise((resolve, reject) => {
+    const allDone = this.tasks.every((task) => task.completed);
+    setTimeout(() => {
+      if (allDone) {
+        resolve("All tasks completed!");
+      } else {
+        reject("Pending tasks remaining");
       }
-    }
-
- async function checkProgress() {
-    if (this.tasks.every(task => task.completed)) {
-          try{
-        console.log(`All tasks completed!`)
-    }
-    catch (error) {
-console.log(`Pending tasks remaining`)
-    }
-  }
-}
-
-}
-}
-
-
+    }, 0);
+  });
+};
 const mahder = new TeamMember(
   "Mahder",
   "Developer",
@@ -111,6 +114,20 @@ const mahder = new TeamMember(
     { title: "ankole", completed: true }
   ]
 );
+
+
+console.log("Before:", mahder.tasks);
+mahder.completeTask("Write code");
+console.log("After:", mahder.tasks);
+mahder.checkProgress()
+  .then(message => console.log("Progress:", message))
+  .catch(error => console.log("Progress:", error));
+mahder.completeTask("Test app");
+mahder.checkProgress()
+  .then(message => console.log("Progress after finishing all:", message))
+  .catch(error => console.log("Progress after finishing all:", error));
+
+
 
 mahder.completeTask("Developer")
 
@@ -163,10 +180,3 @@ candidate.sendConfirmation();
 // student’s progress. Create an async method generateCertificate(studentName) that returns a Promise
 //  resolving only if the progress is 100, otherwise reject with "Incomplete progress".
 
-class Course{
-  constructor(title,instructor,students){
-    this.title=title;
-    this.instructor=instructor;
-    this.students=students
-  }
-}
